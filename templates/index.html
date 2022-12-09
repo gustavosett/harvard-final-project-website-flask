@@ -1,0 +1,222 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    <div style="background-color: rgba(255, 255, 255, 0.1);
+                padding: 20px 0px 30px;
+                border-radius: 6px;
+                margin-bottom: 20px;
+                width: 100%;">
+        <div>
+            <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                <label class="btn btn-dark">
+                  <input onclick="pomodoro()" type="radio" name="options" autocomplete="off" checked> Pomodoro
+                </label>
+                <label class="btn btn-dark">
+                  <input onclick="short_break()" type="radio" name="options" autocomplete="off"> Short Break
+                </label>
+                <label class="btn btn-dark">
+                  <input onclick="long_break()" type="radio" name="options"autocomplete="off"> Long Break
+                </label>
+              </div>
+        </div>
+        <div class="container">
+            <div>
+              <p class="tempo" >
+                <h1 style="font-size: 200px; color: white;
+                            font-family: 'Roboto Black';
+                            filter: drop-shadow(5px 5px 10px rgba(0,0,0, 0.3));
+                            user-select: none;">
+                    <span class="minutos">00</span>:<span class="segundos">00</span>
+                </h1>
+              </p>
+              <div>
+                <audio src="https://fsb.zobj.net/download/b7vCeK1AG7xy2SY2tuUyj30E2yp7SCUb9Z8XTUyA7_eCumUHARuCzER7Aq3R7wy3K4EKe6Y0ViYQroiiPEkoTwgq9k5aLJPMeLsteD73_lqYHL03x1r1BegOOM0A/?a=&c=72&f=calm_minecraft.mp3&special=1659026425-fq6Vq2ffrInAMeBblHp%2B3l%2FNKVVdMYO5H%2B38hrGT0Rg%3D" class="audio"></audio>
+                <button onclick="iniciar()" class="btn btn-dark">START</button>
+                <button onclick="parar()" class="btn btn-dark">STOP</button>
+                <button onclick="resetar()" class="btn btn-dark">RESET</button>
+              </div>
+            </div>
+          </div>
+    </div>
+    <div>
+        <h1 style="font-size: 50px; color: white;
+        font-family: 'Roboto Thin';
+        user-select: none;">
+            My <text style="font-family: 'Roboto Black'">tasks<text>
+        </h1>
+          <style>
+            input[type=text] {
+              width: 130px;
+              box-sizing: border-box;
+              font-size: 16px;
+              background-color: rgba(255,255,255, 0.2);
+              padding: 12px 20px 12px 20px;
+              transition: width 0.4s ease-in-out;
+              color: white;
+              border-color: rgba(0,0,0,0)
+            }
+            ::placeholder {
+            color: white;
+            }
+
+            input[type=text]:focus {
+              width: 20%;
+            }
+            </style>
+            <form action="/" method="POST">
+              <input type="text" name="new_task" id="new_task" placeholder="New task" autocomplete="off">
+              <button onclick="refresh()" class="btn btn-dark submits" type="submit">Submit</button>
+            </form>
+        <div>
+            <ul class="list-group list-group-flush">
+                {% for a in tasks %}
+                <li class="list-group-item" style=" color: white;
+                                                    background-color: rgba(255, 255, 255, 0);
+                                                    width: 20%;
+                                                    margin: auto;
+                                                    padding: 12px 20px 12px 20px;
+                                                    text-align: center;
+                                                    border: 1px solid rgba(255,255,255, 0.4);
+                                                    border-right-width: 0px;
+                                                    border-left-width: 0px;
+                                                    border-radius: 0;
+                                                    border-top-width: 0px;
+                ">{{ a["task"] }} <button style="color: white;
+                                                border-color: white;
+                "class="btn btn-sm btn-outline-secondary badge delete" type="button" data-id="{{ a['id'] }}">delete</button> </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <script>
+        const seg = document.querySelector('.segundos')
+        const min = document.querySelector('.minutos')
+        const audio = document.querySelector('audio')
+        const botoes = document.querySelectorAll('.delete')
+
+        let minutes = {{ pomodoro_brk }}
+        let segNum = 00
+        let minNum = minutes
+        let INTERVALO
+        pomodoro()
+
+        botoes.forEach(function(b) {
+            b.addEventListener("click", (evento)=>{
+                const id = evento.target.getAttribute("data-id")
+                fetch("/getmethod/" + id).then(()=>document.location.reload(true))
+            })
+        })
+
+
+        function refresh() {
+            INTERVALO
+            document.location.reload(true)
+        }
+
+        function pomodoro() {
+            document.body.style.background = '#d59908'
+            parar()
+            minutes = {{ pomodoro_brk }}
+            minNum = minutes
+            if (minutes < 10){
+                min.innerHTML = '0' + {{ pomodoro_brk }}
+            } else {
+                min.innerHTML = {{ pomodoro_brk }}
+            }
+            segNum = 00
+            seg.innerHTML = '00'
+        }
+
+
+        function short_break() {
+            document.body.style.background = '#2893cb'
+            parar()
+            minutes = {{ short_brk }}
+            minNum = minutes
+            if (minutes < 10){
+                min.innerHTML = '0' + {{ short_brk }}
+            } else {
+                min.innerHTML = {{ short_brk }}
+            }
+            segNum = 00
+            seg.innerHTML = '00'
+        }
+
+
+        function long_break() {
+            document.body.style.background = '#4f45a3'
+            parar()
+            minutes = {{ long_brk }}
+            minNum = minutes
+            if (minutes < 10){
+                min.innerHTML = '0' + {{ long_brk }}
+            } else {
+                min.innerHTML = {{ long_brk }}
+            }
+            segNum = 00
+            seg.innerHTML = '00'
+        }
+
+
+
+        function segundos() {
+            segNum--
+            if (minNum <= 0 && segNum <= 0){
+                seg.innerHTML = '0' + segNum
+                parar()
+            } else {
+                if (segNum < 0) {
+                    segNum = 59
+                    minutos()
+                }
+                if (segNum < 10) {
+                    seg.innerHTML = '0' + segNum
+                } else {
+                    seg.innerHTML = segNum
+                }
+            }
+        }
+
+        function minutos() {
+            minNum--
+            if (minNum < 10) {
+                min.innerHTML = '0' + minNum
+            } else {
+                min.innerHTML = minNum
+            }
+        }
+
+        function iniciar() {
+        clearInterval(INTERVALO)
+        INTERVALO = setInterval(() => {
+            segundos()
+        }, 10)
+        }
+
+        function parar() {
+            if (minNum <= 0 && segNum <= 0){
+                audio.play()
+                resetar()
+            }
+            clearInterval(INTERVALO)
+        }
+
+        function resetar() {
+            clearInterval(INTERVALO)
+
+            segNum = 00
+            minNum = minutes
+
+            seg.innerHTML = '00'
+            if (minNum < 10) {
+                min.innerHTML = '0' + minNum
+            } else {
+                min.innerHTML = minNum
+            }
+        }
+      </script>
+{% endblock %}

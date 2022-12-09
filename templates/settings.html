@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Settings
+{% endblock %}
+
+{% block main %}
+    <font color="#ffffff">
+    <h1>Settings</h1>
+    <form action="/settings" method="post">
+        <div class="mb-3">
+            <h5>Pomodoro</h5>
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="pomodoro" value="{{ time }}" type="number">
+        </div>
+        <div class="mb-3">
+            <h5>Short Break</h5>
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="short" value="{{ short }}" type="number">
+        </div>
+        <div class="mb-3">
+            <h5>Long Break</h5>
+            <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="long" value="{{ long }}" type="number">
+        </div>
+        <button class="btn btn-dark" type="submit">Submit</button>
+    </form>
+    <script>
+        document.body.style.background = '#d95550'
+    </script>
+    </font>
+{% endblock %}

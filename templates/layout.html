@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+    <head>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>KEEP CALM AND WORK HARD: {% block title %}{% endblock %}</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <link rel="stylesheet" href="static/style.css">
+    </head>
+
+    <body style=" font-weight: bold; transition: background 3s; background-color: #d59908">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid" style="user-select: none;">
+                <a class="navbar-brand" href="/"><span class="white">KEEP CALM AND WORK HARD</span></a>
+                <button aria-controls="navbar" aria-expanded="true" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbar">
+                    {% if session["user_id"] %}
+                        <ul class="navbar-nav me-auto mt-2">
+                            <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/settings">Settings</a></li>
+                        </ul>
+                        <ul class="navbar-nav ms-auto mt-2" style="margin-left: auto!important;">
+                            <li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+                        </ul>
+                    {% else %}
+                        <ul class="navbar-nav ms-auto mt-2 " style="margin-left: auto!important;">
+                            <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                            <li class="nav-item"><a class="nav-link" href="/login">Log In</a></li>
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+
+        {% if get_flashed_messages() %}
+            <header style="user-select: none;">
+                <div id="alert" class="alert alert-dark mb-0 text-center fade show" role="alert">
+                    {{ get_flashed_messages() | join(" ") }}
+                </div>
+            </header>
+            <script>
+                setTimeout(() => document.querySelector('#alert').classList.remove('show'), 6000)
+            </script>
+        {% endif %}
+
+        <main class="container-fluid py-5 text-center">
+            {% block main %}{% endblock %}
+        </main>
+
+    </body>
+
+</html>

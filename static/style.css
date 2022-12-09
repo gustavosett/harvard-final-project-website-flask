@@ -1,0 +1,22 @@
+nav .navbar-brand
+{
+    font-size: xx-large;
+    font-weight: bold;
+}
+
+nav .navbar-brand .white
+{
+    color: #fff;
+}
+
+div .hhTLXv {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 20px 0px 30px;
+    border-radius: 6px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+body {
+    background-color: #d59908;
+}
